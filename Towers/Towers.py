@@ -14,14 +14,14 @@ class Towers:
         self.solve()
 
     def get_start_vals(self):
-        top_readings_str = input("Enter the values of the top row from left to right without separation. Blank values should be entered as spaces (i.e. 5 3221):\n")
-        self.readings[0] = [0 if i == ' ' else int(i) for i in top_readings_str]
-        bottom_readings_str = input("Enter the values of the bottom row from left to right without separation. Blank values should be entered as spaces (i.e. 5 3221):\n")
-        self.readings[1] = [0 if i == ' ' else int(i) for i in bottom_readings_str]
-        left_readings_str = input("Enter the values of the left column from top to bottom without separation. Blank values should be entered as spaces (i.e. 5 3221):\n")
-        self.readings[2] = [0 if i == ' ' else int(i) for i in left_readings_str]
-        right_readings_str = input("Enter the values of the right column from top to bottom without separation. Blank values should be entered as spaces (i.e. 5 3221):\n")
-        self.readings[3] = [0 if i == ' ' else int(i) for i in right_readings_str]
+        top_readings_str = input("Enter the values of the top row from left to right without separation. Blank values should be entered as zeros (i.e. 503221):\n")
+        self.readings[0] = [int(i) for i in top_readings_str]
+        bottom_readings_str = input("Enter the values of the bottom row from left to right without separation. Blank values should be entered as zeros (i.e. 503221):\n")
+        self.readings[1] = [int(i) for i in bottom_readings_str]
+        left_readings_str = input("Enter the values of the left column from top to bottom without separation. Blank values should be entered as zeros (i.e. 503221):\n")
+        self.readings[2] = [int(i) for i in left_readings_str]
+        right_readings_str = input("Enter the values of the right column from top to bottom without separation. Blank values should be entered as zeros (i.e. 503221):\n")
+        self.readings[3] = [int(i) for i in right_readings_str]
 
     
     def restrict_by_start(self):
