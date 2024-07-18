@@ -1,17 +1,88 @@
 import copy
+import tkinter as tk
 
 class Towers:
     def __init__(self, input_size, test_case) -> None:
-        self.size = input_size
-        self.field_vals = [[set(range(1,self.size+1)) for i in range(self.size)] for j in range(self.size)]
-        self.readings = [0 for i in range(4)]
-        if not test_case:
-            self.get_start_vals()
-        else:
-            self.readings = test_case
-        self.given_mid_vals()
+        self.setup_start_screen()
+
         self.restrict_by_start()
         self.solve()
+
+    def setup_start_screen(self):
+        self.root = tk.Tk()
+            
+        window_width = 300
+        window_height = 200
+        center_x = 500
+        center_y = 300
+        self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+
+        tk.Label(self.root, text='Welcome to Towers!').pack()
+        self.slider = tk.Scale(self.root, to=10, orient='horizontal')
+        self.slider.pack()
+        tk.Button(self.root, text='Start', command=self.start_game).pack()
+
+        self.root.mainloop()
+
+    def setup_game_screen(self):
+        self.root.columnconfigure(0, weight=2)
+        for i in range(self.size):
+            self.root.columnconfigure(i+1, weight=1)
+        self.root.columnconfigure(self.size+1, weight=2)
+        
+        self.root.rowconfigure(0, weight=2)
+        for i in range(self.size):
+            self.root.rowconfigure(i+1, weight=1)
+        self.root.rowconfigure(self.size+1, weight=2)
+
+        for i in range(self.size):
+            entry = tk.Entry(self.root)
+            entry.grid(row=0, column=i+1, stick=tk.EW)
+            entry.bind("<KeyRelease>", self.save_value)
+        for i in range(self.size):
+            entry = tk.Entry(self.root)
+            entry.grid(row=self.size+1, column=i+1, stick=tk.EW)
+            entry.bind("<KeyRelease>", self.save_value)
+        for i in range(self.size):
+            entry = tk.Entry(self.root)
+            entry.grid(row=i+1, column=0, stick=tk.EW)
+            entry.bind("<KeyRelease>", self.save_value)
+        for i in range(self.size):
+            entry = tk.Entry(self.root)
+            entry.grid(row=i+1, column=self.size+1, stick=tk.EW)
+            entry.bind("<KeyRelease>", self.save_value)
+
+        for i in range(self.size):
+            for j in range(self.size):
+                entry = tk.Entry(self.root)
+                entry.grid(row=i+1, column=j+1)
+                entry.bind("<KeyRelease>", self.save_value)
+
+    def save_value(self, event):
+        widget = event.widget
+        info = widget.grid_info()
+        row = info['row']-1
+        col = info['column']-1
+
+        top_or_bottom = row < 0 or row >= self.size
+        if top_or_bottom or col < 0 or col >= self.size:
+            side = int(row >= self.size) if top_or_bottom else 2 + int(col >= self.size)
+            index = col if top_or_bottom else row
+            self.readings[side][index] = int(widget.get())
+        else:
+            self.field_vals[row][col] = set([int(widget.get())])
+
+    def start_game(self):
+        self.size = self.slider.get()
+        self.field_vals = [[set(range(1,self.size+1)) for i in range(self.size)] for j in range(self.size)]
+        self.readings = [[0 for i in range(self.size)] for j in range(4)]
+
+        self.clear_screen()
+        self.setup_game_screen()
+
+    def clear_screen(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
 
     def get_start_vals(self):
         top_readings_str = input("Enter the values of the top row from left to right without separation. Blank values should be entered as zeros (i.e. 503221):\n")
@@ -109,6 +180,6 @@ class Towers:
 
 
 if __name__ == "__main__":
-    size = int(input('What size of board are you playing with?\n'))
+    size = 6 #int(input('What size of board are you playing with?\n'))
     test_case_1 = [[2,5,2,1,4],[2,1,2,4,2],[3,3,1,3,2],[2,3,2,1,4]]
     tower = Towers(size, [])
